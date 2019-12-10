@@ -1,0 +1,11 @@
+curl -X POST -H "Authorization: key=YOUR-SERVER-KEY" -H "Content-Type: application/json" -d '{
+  "notification": {
+    "title": "Portugal vs. Denmark",
+    "body": "5 to 1",
+    "icon": "firebase-logo.png",
+    "click_action": "http://localhost:8081"
+  },
+  "to": "YOUR-IID-TOKEN"
+}' "https://fcm.googleapis.com/fcm/send"
+
+curl -X POST -H "Authorization: key=AIzaSyD_JxipGsAeIIqsKUs3ofLf9B8n4DaUHWg" -H "Content-Type: application/json" -d '{"notification": {"title": "Portugal vs. Denmark", "body": "5 to 1","icon":firebase-logo.png", "click_action": "http://localhost:8081"  },"to": "eES90ZvTWfA:APA91bGbhRXWTz2eR8rTFi6-ox2FFikwPFY06b-GT2NWoO6EfVDN9PFf04iRroCQ0wzCBrQmmZR0xmr9ucf4Dyt0_8W2mRpNO-QytfKt0flcq9sohaHwOtzN2TT9cTKe3zlWNPA8e-1e" }' "https://fcm.googleapis.com/fcm/send"
