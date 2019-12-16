@@ -1,15 +1,3 @@
-// Initialize Firebase
-const firebaseConfig = {
-	apiKey: "AIzaSyAmeAO2aH-FUjzCUuTPgGhkIQCpwzb-JHs",
-	authDomain: "ttsviajes-test.firebaseapp.com",
-	databaseURL: "https://ttsviajes-test.firebaseio.com",
-	projectId: "ttsviajes-test",
-	storageBucket: "ttsviajes-test.appspot.com",
-	messagingSenderId: "92010404423",
-	appId: "1:92010404423:web:9c8e4c1809b71fcd"
-};
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
 // [START get_messaging_object]
 // Retrieve Firebase Messaging object.
 const messaging = firebase.messaging();
@@ -46,7 +34,8 @@ messaging.onTokenRefresh(() => {
 //   `messaging.setBackgroundMessageHandler` handler.
 messaging.onMessage((payload) => {
 	console.log('Message received. ', payload);
-	appendMessage(payload);
+	// appendMessage(payload);
+	var notif = showWebNotification(payload.notification.title, payload.notification.body, payload.notification.icon, null, 5000);
 });
 
 // [END receive_message]
@@ -82,6 +71,7 @@ function sendTokenToServer(currentToken) {
 	if (!isTokenSentToServer()) {
 		console.log('Sending token to server...');
 		// TODO(developer): Send the current token to your server.
+		subscribeTokenToTopic(currentToken, 'general');
 		setTokenSentToServer(true);
 	} else {
 		console.log("Token already sent to server so won't send it again unless it changes");
@@ -127,6 +117,24 @@ function appendMessage(payload) {
 	messagesElement.appendChild(dataHeaderELement);
 	messagesElement.appendChild(dataElement);
 }
+function subscribeTokenToTopic(token, topic) {
+  	var myHeaders = new Headers();
+  	
+	myHeaders.append("Authorization", "key=AAAAFWw_Wkc:APA91bEgaJgJJlCw85Yl19rQh5VP9A9baf9sLzD77PhS0T4kJz1bWhf6LRB_seX4dl6JxbivjWNDoYd49dYPbb7POUIumYNwKYchJo755rsS3g-5DeKiVnsbrr5WnJ0qvN4nCdwyJLjU");
+	myHeaders.append("Content-Type", "application/json");
+
+	var requestOptions = {
+	  method: 'POST',
+	  headers: myHeaders,
+	  redirect: 'follow'
+	};
+
+	var urlRequest = 'https://iid.googleapis.com/iid/v1/'+token+'/rel/topics/'+topic;
+	fetch(urlRequest, requestOptions)
+	  .then(response => response.text())
+	  .then(result => console.log(result))
+	  .catch(error => console.log('error', error));
+}
 
 // function deleteToken() {
 // 	// Delete Instance ID token.
@@ -149,108 +157,3 @@ function appendMessage(payload) {
 // }
 
 requestPermissionInit();
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyAmeAO2aH-FUjzCUuTPgGhkIQCpwzb-JHs",
-//   authDomain: "ttsviajes-test.firebaseapp.com",
-//   databaseURL: "https://ttsviajes-test.firebaseio.com",
-//   projectId: "ttsviajes-test",
-//   storageBucket: "ttsviajes-test.appspot.com",
-//   messagingSenderId: "92010404423",
-//   appId: "1:92010404423:web:9c8e4c1809b71fcd"
-// };
-//  // Initialize the Firebase app in the service worker by passing in the
-//  // messagingSenderId.
-//  firebase.initializeApp(firebaseConfig);
-//  // Retrieve an instance of Firebase Messaging so that it can handle background
-//  // messages.
-//  const messaging = firebase.messaging();
-//  messaging.requestPermission()
-//  .then(() => {
-//  	console.log('Have permission.');
-//  })
-//  .catch((err) => {
-//  	console.log('Error.', err);
-
-//  })
-//  // [END initialize_firebase_in_sw]
-// // const messaging = firebase.messaging();
-// // messaging.usePublicVapidKey('BIhmQEJT8Xlv05OWN7kML5GFIKaTkg61UJ20d-p7u2VLA2x0ENWuZxH-n3U0rEcH2i84Q9bgi-YrAGHQkRm7XBI');
-
-// // (function() {
-
-// // 	messaging.onTokenRefresh(function() {
-// // 		messaging.getToken().then(function(refreshedToken) {
-// // 	  		console.log('Token refreshed.');
-// // 	  		console.log('current token in app ' + refreshedToken);
-// // 	  		storeToken(refreshedToken);
-// // 		}).catch(function(err) {
-// // 	  		console.log('Unable to retrieve refreshed token ', err);
-// // 		});
-// // 	});
-
-// // 	function initializeMessaging() {
-// // 		// Get Instance ID token. Initially this makes a network call, once retrieved
-// // 		// subsequent calls to getToken will return from cache.
-// // 		messaging.getToken().then(function(currentToken) {
-// // 	  		if (currentToken) {
-// // 	  			console.log('current token in app ' + currentToken);
-// // 				storeToken(currentToken);
-// // 	  		} else {
-// // 				console.log('No Instance ID token available. Request permission to generate one.');
-// // 	  		}
-// // 		}).catch(function(err) {
-// // 	  		console.log('An error occurred while retrieving token. ', err);
-// // 		});
-// // 	}
-
-// // 	 // Send the Instance ID token your application server, so that it can:
-// // 	// - send messages back to this app
-// // 	// - subscribe/unsubscribe the token from topics
-// // 	function storeToken(currentToken) {
-// // 		if (!isTokenNotifications()) {
-// // 			console.log('Setting token...');
-// // 			// TODO(developer): Send the current token to your server.
-// // 			setTokenNotifications(currentToken);
-// // 		} else {
-// // 			console.log('Token already setted ' + 'unless it changes');
-// // 		}
-// // 	}
-
-// // 	function setTokenNotifications(token) {
-// // 		window.localStorage.setItem('tokenNotifications', token);
-// // 		console.log('token.', token);
-
-// // 	}
-
-// // 	function requestPermission() {
-// // 		console.log('Requesting permission...');
-// // 		Notification.requestPermission().then(function(permission) {
-// // 	 		if (permission === 'granted') {
-// // 				console.log('Notification permission granted.');
-// // 				initializeMessaging();
-// // 	 		 } else {
-// // 				console.log('Unable to get permission to notify.');
-// // 	  		}
-// // 		});
-// // 	}
-
-// // 	requestPermission();
-// // })();
-// // function isTokenNotifications() {
-// // 	return window.localStorage.getItem('tokenNotifications') !== null;
-// // }
-
-// // // Handle incoming messages:
-// // messaging.onMessage(function(payload) {
-// // 	console.log('notification received', payload);
-// // 	// Customize notification here
-// // 	let notificationTitle = payload.data.title;
-// // 	let notificationOptions = {
-// // 		body: payload.data.body,
-// // 		icon: payload.data.icon   
-// // 	};
-
-// //     let notification = new Notification(notificationTitle,notificationOptions);
-// //     notification.onclick = function(event){ window.open(payload.data.click_action, '_blank');}
-// // });

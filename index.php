@@ -11,6 +11,9 @@
 
   <div id="messages"></div>
   <script src="https://www.gstatic.com/firebasejs/6.2.0/firebase.js"></script>
+
+  <script type="text/javascript" src="firebase-config.js"></script>
+  <script type="text/javascript" src="web-notifications.js"></script>
   <script type="text/javascript" src="messaging.js"></script>
 </body>
 </html>
