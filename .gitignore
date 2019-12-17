@@ -1,2 +1,2 @@
 # Specify filepatterns you want git to ignore.
-./firebase-config.js
+firebase-config.js
