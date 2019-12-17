@@ -58,7 +58,7 @@ function createNewWebNotification(title, msg, icon, tag, timeout) {
 	if (icon)
 		options.icon = icon;
 	if (tag)
-		option.click_action = tag;
+		option.tag = tag;
 
 	//Show the notification
 	var notif = new Notification(title, options);

@@ -4,7 +4,7 @@ const messaging = firebase.messaging();
 // [END get_messaging_object]
 // [START set_public_vapid_key]
 // Add the public key generated from the console here.
-messaging.usePublicVapidKey('BIvP8U7o9TbHUib2Gd2zE3wREniJg3AcsS4KrzTeBFC5aiSptk7ZNB3x1NLwJtWuh-wh8HknqFhzsrcVe7-TTXg');
+messaging.usePublicVapidKey(usePublicVapidKey);
 // [END set_public_vapid_key]
 
 // [START refresh_token]
@@ -46,7 +46,9 @@ function requestPermission() {
 	// subsequent calls to getToken will return from cache.
 	messaging.getToken().then((currentToken) => {
 	if (currentToken) {
+		storeToken(currentToken);
 		sendTokenToServer(currentToken);
+		subscribeTokenToTopic(currentToken, 'general');
 	} else {
 		// Show permission request.
 		console.log('No Instance ID token available. Request permission to generate one.');
@@ -71,7 +73,6 @@ function sendTokenToServer(currentToken) {
 	if (!isTokenSentToServer()) {
 		console.log('Sending token to server...');
 		// TODO(developer): Send the current token to your server.
-		subscribeTokenToTopic(currentToken, 'general');
 		setTokenSentToServer(true);
 	} else {
 		console.log("Token already sent to server so won't send it again unless it changes");
@@ -120,7 +121,7 @@ function appendMessage(payload) {
 function subscribeTokenToTopic(token, topic) {
   	var myHeaders = new Headers();
   	
-	myHeaders.append("Authorization", "key=AAAAFWw_Wkc:APA91bEgaJgJJlCw85Yl19rQh5VP9A9baf9sLzD77PhS0T4kJz1bWhf6LRB_seX4dl6JxbivjWNDoYd49dYPbb7POUIumYNwKYchJo755rsS3g-5DeKiVnsbrr5WnJ0qvN4nCdwyJLjU");
+	myHeaders.append("Authorization", "key="+firebaseKey);
 	myHeaders.append("Content-Type", "application/json");
 
 	var requestOptions = {
@@ -135,7 +136,24 @@ function subscribeTokenToTopic(token, topic) {
 	  .then(result => console.log(result))
 	  .catch(error => console.log('error', error));
 }
-
+// Send the Instance ID token your application server, so that it can:
+// - send messages back to this app
+// - subscribe/unsubscribe the token from topics
+function storeToken(currentToken) {
+	if (!isTokenNotifications()) {
+		console.log('Setting token...');
+		// TODO(developer): Send the current token to your server.
+		setTokenNotifications(currentToken);
+	} else {
+		console.log('Token already setted ' + 'unless it changes');
+	}
+}
+function setTokenNotifications(token) {
+	window.localStorage.setItem('tokenNotifications', token);
+}
+function isTokenNotifications() {
+	return window.localStorage.getItem('tokenNotifications') !== null;
+}
 // function deleteToken() {
 // 	// Delete Instance ID token.
 // 	// [START delete_token]
