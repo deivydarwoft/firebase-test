@@ -26,6 +26,17 @@ messaging.onTokenRefresh(() => {
 	});
 });
 // [END refresh_token]
+function displayNotification(payload) {
+    if (Notification.permission == 'granted') {
+        // If it's okay let's create a notification
+        var theTitle = payload.notification.title;
+        var options = {
+		    body: payload.notification.body,
+		    image: payload.notification.icon
+		 }
+    	var notification = new Notification(theTitle, options);
+    }
+}
 
 // [START receive_message]
 // Handle incoming messages. Called when:
@@ -34,8 +45,9 @@ messaging.onTokenRefresh(() => {
 //   `messaging.setBackgroundMessageHandler` handler.
 messaging.onMessage((payload) => {
 	console.log('Message received. ', payload);
+	displayNotification(payload);
 	// appendMessage(payload);
-	var notif = showWebNotification(payload.notification.title, payload.notification.body, payload.notification.icon, null, 5000);
+	// var notif = showWebNotification(payload.notification.title, payload.notification.body, payload.notification.icon, null, 5000);
 });
 
 // [END receive_message]
