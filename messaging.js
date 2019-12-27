@@ -65,11 +65,13 @@ function requestPermission() {
 		// Show permission request.
 		console.log('No Instance ID token available. Request permission to generate one.');
 		setTokenSentToServer(false);
+		requestPermissionInit();
 	}
 	}).catch((err) => {
 		console.log('An error occurred while retrieving token. ', err);
 		showToken('Error retrieving Instance ID token. ', err);
 		setTokenSentToServer(false);
+		requestPermissionInit();
 	});
 	// [END get_token]
 }
@@ -84,6 +86,7 @@ function showToken(currentToken) {
 function sendTokenToServer(currentToken) {
 	if (!isTokenSentToServer()) {
 		console.log('Sending token to server...');
+		showToken(currentToken);
 		// TODO(developer): Send the current token to your server.
 		setTokenSentToServer(true);
 	} else {
@@ -145,7 +148,7 @@ function subscribeTokenToTopic(token, topic) {
 	var urlRequest = 'https://iid.googleapis.com/iid/v1/'+token+'/rel/topics/'+topic;
 	fetch(urlRequest, requestOptions)
 	  .then(response => response.text())
-	  .then(result => console.log(result))
+	  .then(result => console.log('subscribeTokenToTopic',result))
 	  .catch(error => console.log('error', error));
 }
 // Send the Instance ID token your application server, so that it can:
@@ -157,7 +160,7 @@ function storeToken(currentToken) {
 		// TODO(developer): Send the current token to your server.
 		setTokenNotifications(currentToken);
 	} else {
-		console.log('Token already setted ' + 'unless it changes');
+		console.log('Token already setted ' + currentToken + 'unless it changes');
 	}
 }
 function setTokenNotifications(token) {
